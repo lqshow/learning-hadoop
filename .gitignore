@@ -6,3 +6,4 @@ output
 .swp
 logs
 *.dump
+dependency-reduced-pom.xml

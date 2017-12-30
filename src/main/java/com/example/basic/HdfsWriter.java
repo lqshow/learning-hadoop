@@ -28,25 +28,25 @@ public class HdfsWriter {
 
         LOGGER.info("Connecting to {}", conf.get("fs.defaultFS"));
 
-        FileSystem fs = FileSystem.get(conf);
 
-        writingData2HdfsFile(fs, "Hello world!!!", "output/new_text");
-        localFile2Hdfs(fs, "src/main/resources/daily_show_guests", "output/daily_show_guests");
-        skipLimitCharacters(fs, "src/main/resources/daily_show_guests", "output/daily_show_guests_skip", 100);
-        srcHdfsFile2DstHdfsFile(fs, "output/daily_show_guests", "output/daily_show_guests_gbk");
+        writingData2HdfsFile("Hello world!!!", "output/new_text");
+//        apppendData2HdfsFile("Hello world!!", "output/new_text2");
+        localFile2Hdfs("src/main/resources/file/daily_show_guests", "output/daily_show_guests");
+        skipLimitCharacters("src/main/resources/file/daily_show_guests", "output/daily_show_guests_skip", 100);
+        srcHdfsFile2DstHdfsFile("output/daily_show_guests", "output/daily_show_guests_gbk");
     }
 
 
     /**
      * Writing data to hdfs file
      *
-     * @param fs      FileSystem
      * @param content Raw data
      * @param dstPath Destination file in HDFS
      * @throws IOException
      */
-    static void writingData2HdfsFile(FileSystem fs, String content, String dstPath) throws IOException {
+    static void writingData2HdfsFile(String content, String dstPath) throws IOException {
         try (
+                FileSystem fs = FileSystem.get(conf);
                 // Destination file in HDFS
                 FSDataOutputStream fsos = fs.create(new Path(dstPath))
         ) {
@@ -56,15 +56,33 @@ public class HdfsWriter {
     }
 
     /**
+     * Append data to hdfs file
+     * @param content
+     * @param dstPath
+     * @throws IOException
+     */
+    static void apppendData2HdfsFile(String content, String dstPath) throws IOException {
+        try (
+                FileSystem fs = FileSystem.get(conf);
+                FSDataOutputStream fsos = fs.append(new Path(dstPath))
+
+        ) {
+            byte[] buffer = content.getBytes();
+            fsos.write(buffer);
+        }
+    }
+
+
+    /**
      * Writing a Source hdfs File to Destination hdfs file
      *
-     * @param fs      FileSystem
      * @param srcPath Source file in HDFS
      * @param dstPath Destination file in HDFS
      * @throws IOException
      */
-    static void srcHdfsFile2DstHdfsFile(FileSystem fs, String srcPath, String dstPath) throws IOException {
+    static void srcHdfsFile2DstHdfsFile(String srcPath, String dstPath) throws IOException {
         try (
+                FileSystem fs = FileSystem.get(conf);
                 // Source file in HDFS
                 FSDataInputStream fsis = fs.open(new Path(srcPath));
                 BufferedReader br = new BufferedReader(new InputStreamReader(fsis, "UTF-8"));
@@ -83,14 +101,14 @@ public class HdfsWriter {
     /**
      * Writing a file to Hdfs
      *
-     * @param fs       FileSystem
      * @param localSrc Source file in the local file system
      * @param hdfsDst  Destination file in HDFS
      * @throws IOException
      */
-    static void localFile2Hdfs(FileSystem fs, String localSrc, String hdfsDst) throws IOException {
+    static void localFile2Hdfs(String localSrc, String hdfsDst) throws IOException {
 
         try (
+                FileSystem fs = FileSystem.get(conf);
                 // Input stream for the file in local file system to be written to HDFS
                 InputStream in = new BufferedInputStream(new FileInputStream(localSrc));
 
@@ -106,14 +124,14 @@ public class HdfsWriter {
 
 
     /**
-     * @param fs       FileSystem
      * @param localSrc Source file in the local file system
      * @param hdfsDst  Destination file in HDFS
      * @param limit    the number of bytes to be skipped
      * @throws IOException
      */
-    static void skipLimitCharacters(FileSystem fs, String localSrc, String hdfsDst, long limit) throws IOException {
+    static void skipLimitCharacters(String localSrc, String hdfsDst, long limit) throws IOException {
         try (
+                FileSystem fs = FileSystem.get(conf);
                 // Input stream for the file in local file system to be written to HDFS
                 InputStream in = new BufferedInputStream(new FileInputStream(localSrc));
 

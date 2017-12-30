@@ -20,22 +20,20 @@ public class HdfsReader {
     public static void main(String[] args) throws Exception {
         // Get configuration of Hadoop system
         conf = new Configuration();
-        FileSystem fs = FileSystem.get(conf);
 
-        fileSystemCat(fs, "output/daily_show_guests");
-        fileReadFromHdfs(fs, "output/daily_show_guests", "/Users/linqiong/Downloads/daily_show_guests");
+        fileSystemCat("output/daily_show_guests");
+        fileReadFromHdfs("output/daily_show_guests", "/Users/linqiong/Downloads/daily_show_guests");
     }
 
     /**
      * fs cat
      *
-     * @param fs
      * @param srcPath
      * @throws Exception
      */
-    static void fileSystemCat(FileSystem fs, String srcPath) throws Exception {
+    static void fileSystemCat(String srcPath) throws Exception {
         FSDataInputStream fsis = null;
-        try {
+        try (FileSystem fs = FileSystem.get(conf)) {
             Path inputPath = new Path(srcPath);
             if (!fs.exists(inputPath)) {
                 throw new Exception("File does not exist");
@@ -55,12 +53,12 @@ public class HdfsReader {
     /**
      * Reading a hdfs file to local file
      *
-     * @param fs
      * @param srcPath
      * @param localOutputPath
      */
-    static void fileReadFromHdfs(FileSystem fs, String srcPath, String localOutputPath) throws Exception {
+    static void fileReadFromHdfs(String srcPath, String localOutputPath) throws Exception {
         try (
+                FileSystem fs = FileSystem.get(conf);
                 FSDataInputStream fsis = fs.open(new Path(srcPath));
                 OutputStream os = new BufferedOutputStream(new FileOutputStream(localOutputPath))
         ) {
