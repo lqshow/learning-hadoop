@@ -12,6 +12,8 @@
         <thrift.executable>thrift</thrift.executable>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- parquet 1.9+ conflict with Spark -->
+        <parquet.version>1.8.1</parquet.version>
     </properties>
 
     <dependencies>
@@ -119,6 +121,18 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-column</artifactId>
+            <version>${parquet.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-tools</artifactId>
+            <version>${parquet.version}</version>
         </dependency>
     </dependencies>
 

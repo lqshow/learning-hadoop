@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
  * Reference:
  * - http://mund-consulting.com/Blog/file-operations-in-hdfs-using-java/
  */
-public class HdfsFileSystem {
+public class HdfsOperations {
     private static Configuration conf;
 
     public static void main(String[] args) throws IOException {
