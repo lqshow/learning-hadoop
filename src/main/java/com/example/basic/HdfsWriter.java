@@ -147,6 +147,12 @@ public class HdfsWriter {
             if (bytesRead >= 0) {
                 os.write(buffer, 0, bytesRead);
             }
+
+            // 从101的位置读取所有内容到文件
+//            int numBytes = 0;
+//            while ((numBytes = in.read(buffer)) > 0) {
+//                os.write(buffer, 0, numBytes);
+//            }
         }
     }
 }
